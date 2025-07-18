@@ -1,0 +1,13 @@
+{
+  "functions": {
+    "api/connect4-card.ts": {
+      "runtime": "@vercel/node"
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/connect4-card",
+      "dest": "/api/connect4-card.ts"
+    }
+  ]
+} 
