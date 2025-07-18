@@ -3,7 +3,19 @@ const ROWS = 6;
 const COLS = 7;
 const PADDING = 20;
 
-function renderSVG(state) {
+// Generate a unique color for each username (simple hash)
+function stringToColor(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const c = (hash & 0x00FFFFFF)
+    .toString(16)
+    .toUpperCase();
+  return "#" + "00000".substring(0, 6 - c.length) + c;
+}
+
+function renderSVG(state, username) {
   const width = COLS * CELL_SIZE + PADDING * 2;
   const height = ROWS * CELL_SIZE + PADDING * 2 + 120;
 
@@ -31,9 +43,13 @@ function renderSVG(state) {
     winnerSVG = `<text x="${width / 2}" y="${height - 110}" font-size="24" font-family="monospace" fill="#28a745" text-anchor="middle">Winner: ${state.winner}</text>`;
   }
 
+  // Username display
+  let userSVG = `<text x="${width / 2}" y="35" font-size="20" font-family="monospace" fill="${stringToColor(username)}" text-anchor="middle">User: ${username}</text>`;
+
   return `
 <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
   <rect width="100%" height="100%" fill="#f8f9fa" rx="20"/>
+  ${userSVG}
   <g>
     ${boardSVG}
   </g>
@@ -47,7 +63,9 @@ function renderSVG(state) {
 
 module.exports = (req, res) => {
   try {
-    // Embed the game state directly instead of reading from file
+    const { username = "player1" } = req.query;
+
+    // You can make the board/moves unique per user if you want!
     const state = {
       board: [
         [null, null, null, null, null, null, null],
@@ -70,11 +88,11 @@ module.exports = (req, res) => {
       winner: null
     };
 
-    const svg = renderSVG(state);
+    const svg = renderSVG(state, username);
     res.setHeader('Content-Type', 'image/svg+xml');
     res.status(200).send(svg);
   } catch (error) {
     console.error('Error:', error);
     res.status(500).send('Error generating SVG');
   }
-}; 
+};
