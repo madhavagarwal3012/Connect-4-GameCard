@@ -1,6 +1,3 @@
-const fs = require('fs');
-const path = require('path');
-
 const CELL_SIZE = 50;
 const ROWS = 6;
 const COLS = 7;
@@ -50,8 +47,29 @@ function renderSVG(state) {
 
 module.exports = (req, res) => {
   try {
-    const statePath = path.join(process.cwd(), 'gameState.json');
-    const state = JSON.parse(fs.readFileSync(statePath, "utf-8"));
+    // Embed the game state directly instead of reading from file
+    const state = {
+      board: [
+        [null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null]
+      ],
+      players: [
+        { username: "player1", color: "#FFD700" },
+        { username: "player2", color: "#FF4136" }
+      ],
+      moveHistory: [
+        { moveNumber: 1, column: 3, row: 5, color: "#FFD700", githubUsername: "player1" },
+        { moveNumber: 2, column: 4, row: 5, color: "#FF4136", githubUsername: "player2" },
+        { moveNumber: 3, column: 3, row: 4, color: "#FFD700", githubUsername: "player1" }
+      ],
+      currentPlayer: 0,
+      winner: null
+    };
+
     const svg = renderSVG(state);
     res.setHeader('Content-Type', 'image/svg+xml');
     res.status(200).send(svg);
