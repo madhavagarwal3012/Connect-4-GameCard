@@ -1,13 +1,8 @@
 {
+  "version": 2,
   "functions": {
-    "api/connect4-card.ts": {
-      "runtime": "@vercel/node"
+    "api/*.js": {
+      "runtime": "nodejs18.x"
     }
-  },
-  "routes": [
-    {
-      "src": "/api/connect4-card",
-      "dest": "/api/connect4-card.ts"
-    }
-  ]
+  }
 } 
