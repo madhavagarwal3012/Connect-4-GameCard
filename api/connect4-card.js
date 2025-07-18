@@ -61,7 +61,7 @@ function renderSVG(state, username) {
   `;
 }
 
-module.exports = (req, res) => {
+export default (req, res) => {
   try {
     const { username = "player1" } = req.query;
 
